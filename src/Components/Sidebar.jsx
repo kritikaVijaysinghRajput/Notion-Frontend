@@ -1,63 +1,47 @@
+// Sidebar.jsx
 import React from "react";
 import { Link } from "react-router-dom";
-import { useState } from "react"; // For toggling night mode
+import BookIcon from "@mui/icons-material/Book";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
 
 function Sidebar({ toggleTheme, darkMode }) {
   return (
     <div
-      className={`h-screen w-64 p-4 ${
-        darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"
-      }`}
+      className={`h-screen rounded-xl w-60 ${
+        darkMode
+          ? "bg-gray-900 text-white shadow-md shadow-white"
+          : "bg-gray-200 text-black shadow-md shadow-black"
+      } p-4`}
     >
-      <div className="mb-8">
+      <div className="mb-8 flex items-center justify-between">
         <h2 className="text-xl font-semibold">Kritika Rajput</h2>
+        <button
+          onClick={toggleTheme}
+          className={`ml-4 flex items-center ${
+            darkMode ? "hover:bg-gray-700" : "hover:bg-gray-300"
+          } p-2 rounded`}
+        >
+          {darkMode ? (
+            <LightModeIcon className="mr-1" />
+          ) : (
+            <DarkModeIcon className="mr-1" />
+          )}
+        </button>
       </div>
 
       <ul className="mb-6 space-y-3">
         <li>
           <Link
-            to="/"
-            className={`block hover:${
-              darkMode ? "bg-gray-700" : "bg-gray-200"
+            to="/create"
+            className={`flex items-center ${
+              darkMode ? "hover:bg-gray-800" : "hover:bg-gray-300"
             } p-2 rounded`}
           >
-            Home
+            <BookIcon className="mr-2" /> Create Document
           </Link>
         </li>
       </ul>
-
-      <ul className="space-y-3">
-        <li>
-          <Link
-            to="/calendar"
-            className={`block hover:${
-              darkMode ? "bg-gray-700" : "bg-gray-200"
-            } p-2 rounded`}
-          >
-            Calendar
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/settings"
-            className={`block hover:${
-              darkMode ? "bg-gray-700" : "bg-gray-200"
-            } p-2 rounded`}
-          >
-            Settings
-          </Link>
-        </li>
-      </ul>
-
-      {/* Night mode toggle */}
-      <div className="mt-8">
-        <button
-          onClick={toggleTheme}
-          className="w-full text-center py-2 px-4 border rounded bg-indigo-500 text-white hover:bg-indigo-600"
-        >
-          {darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-        </button>
-      </div>
     </div>
   );
 }

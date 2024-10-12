@@ -2,6 +2,7 @@ import React from "react";
 import { heroimg, feature1, feature2, feature3 } from "../assets/index.js";
 import Footer from "../Components/Footer";
 import Navbar from "../Components/Navbar";
+import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   return (
@@ -17,12 +18,18 @@ const LandingPage = () => {
               Write, plan, and organize in our powered workspace for every team.
             </p>
             <div className="space-x-4">
-              <button className="bg-gray-700 text-white py-2 px-6 rounded hover:bg-gray-500 transition ease-in-out duration-300">
+              <Link
+                to="/dashboard"
+                className="bg-gray-700 text-white py-2 px-6 rounded hover:bg-gray-500 transition ease-in-out duration-300"
+              >
                 Get started free
-              </button>
-              <button className="border border-gray-600 text-gray-600 py-2 px-6 rounded hover:bg-gray-100 transition ease-in-out duration-300">
+              </Link>
+              <Link
+                to="/dashboard"
+                className="border border-gray-600 text-gray-600 py-2 px-6 rounded hover:bg-gray-100 transition ease-in-out duration-300"
+              >
                 Try a demo
-              </button>
+              </Link>
             </div>
           </div>
 
