@@ -1,70 +1,66 @@
-// CreateDocument.jsx
 import React, { useState } from "react";
-import SaveIcon from "@mui/icons-material/Save";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
-import IconButton from "@mui/material/IconButton";
+import axios from "axios";
 
-function CreateDocument({ isDarkMode }) {
-  const [documentContent, setDocumentContent] = useState("");
+const CreateDocument = ({ ownerId }) => {
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const handleSave = () => {
-    console.log("Document saved:", documentContent);
-  };
+  const handleSave = async () => {
+    try {
+      const response = await axios.post("http://localhost:5000/api/documents", {
+        title,
+        content,
+        owner: ownerId,
+      });
 
-  const handleChange = (event) => {
-    setDocumentContent(event.target.value);
-  };
-
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      console.log("Image attached:", file.name);
+      setSuccess("Document created successfully!");
+      setError("");
+      setTitle("");
+      setContent("");
+    } catch (err) {
+      setError("Error creating document: " + err.message);
+      setSuccess("");
     }
   };
 
   return (
-    <div className="h-full  overflow-hidden p-4 relative">
-      <div className="flex items-center mb-4">
-        <textarea
-          className="w-full h-3/4 border-none resize-none bg-transparent outline-none"
-          placeholder="Type your document here..."
-          value={documentContent}
-          onChange={handleChange}
+    <div className="p-4">
+      <h2 className="text-2xl mb-4">Create Document</h2>
+      {error && <div className="text-red-500">{error}</div>}
+      {success && <div className="text-green-500">{success}</div>}
+      <div className="mb-4">
+        <label className="block mb-2" htmlFor="title">
+          Title
+        </label>
+        <input
+          type="text"
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="border p-2 w-full"
+          required
         />
       </div>
-
-      <div className="absolute top-4 right-4 flex space-x-2">
-        <label htmlFor="image-upload">
-          <input
-            id="image-upload"
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="hidden"
-          />
-          <IconButton
-            size="small"
-            style={{
-              color: isDarkMode ? "white" : "black",
-            }}
-            aria-label="attach image"
-          >
-            <AttachFileIcon fontSize="small" />
-          </IconButton>
+      <div className="mb-4">
+        <label className="block mb-2" htmlFor="content">
+          Content
         </label>
-        <IconButton
-          size="small"
-          style={{
-            color: isDarkMode ? "white" : "black",
-          }}
-          onClick={handleSave}
-          aria-label="save document"
-        >
-          <SaveIcon fontSize="small" />
-        </IconButton>
+        <textarea
+          id="content"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          className="border p-2 w-full"
+          rows="4"
+          required
+        />
       </div>
+      <button onClick={handleSave} className="bg-blue-500 text-white p-2">
+        Save Document
+      </button>
     </div>
   );
-}
+};
 
 export default CreateDocument;
