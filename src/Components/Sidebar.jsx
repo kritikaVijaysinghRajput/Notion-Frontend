@@ -1,49 +1,53 @@
-// Sidebar.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import BookIcon from "@mui/icons-material/Book";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LightModeIcon from "@mui/icons-material/LightMode";
 
-function Sidebar({ toggleTheme, darkMode }) {
+const Sidebar = () => {
+  const [documents, setDocuments] = useState([]);
+
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      try {
+        const userId = localStorage.getItem("user-id"); // Get the user ID from localStorage
+
+        const response = await fetch("http://localhost:5000/api/documents", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "user-id": userId, // Include user ID in headers to authenticate the request
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch documents");
+        }
+
+        const data = await response.json();
+        setDocuments(data); // Store fetched documents in state
+      } catch (error) {
+        console.error("Error fetching documents:", error);
+      }
+    };
+
+    fetchDocuments(); // Call the fetch function when the component mounts
+  }, []); // Empty dependency array ensures it only runs once
+
   return (
-    <div
-      className={`h-screen rounded-xl w-60 ${
-        darkMode
-          ? "bg-gray-900 text-white shadow-md shadow-white"
-          : "bg-gray-200 text-black shadow-md shadow-black"
-      } p-4`}
-    >
-      <div className="mb-8 flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Kritika Rajput</h2>
-        <button
-          onClick={toggleTheme}
-          className={`ml-4 flex items-center ${
-            darkMode ? "hover:bg-gray-700" : "hover:bg-gray-300"
-          } p-2 rounded`}
-        >
-          {darkMode ? (
-            <LightModeIcon className="mr-1" />
-          ) : (
-            <DarkModeIcon className="mr-1" />
-          )}
-        </button>
-      </div>
-
-      <ul className="mb-6 space-y-3">
-        <li>
-          <Link
-            to="/create"
-            className={`flex items-center ${
-              darkMode ? "hover:bg-gray-800" : "hover:bg-gray-300"
-            } p-2 rounded`}
-          >
-            <BookIcon className="mr-2" /> Create Document
-          </Link>
-        </li>
+    <div className="w-64 bg-gray-800 text-white h-full">
+      <h2 className="text-lg font-bold p-4">Documents</h2>
+      <ul>
+        {documents.map((doc) => (
+          <li key={doc._id} className="p-2 hover:bg-gray-700">
+            <Link to={`/documents/${doc._id}`} className="block">
+              {doc.title}
+            </Link>
+          </li>
+        ))}
       </ul>
+      <Link to="/create" className="block p-2 hover:bg-gray-700">
+        Create New Document
+      </Link>
     </div>
   );
-}
+};
 
 export default Sidebar;

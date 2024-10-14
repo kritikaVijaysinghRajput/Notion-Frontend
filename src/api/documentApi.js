@@ -1,23 +1,32 @@
-import axios from "axios";
-
-const API_URL = "/api/documents";
-
-export const createDocument = async (data) => {
-  const response = await axios.post(API_URL, data);
-  return response.data;
-};
-
+// api/documentApi.js
 export const getDocuments = async () => {
-  const response = await axios.get(API_URL);
-  return response.data;
+  try {
+    const response = await fetch("/api/documents");
+    if (!response.ok) {
+      throw new Error("Failed to fetch documents");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching documents:", error);
+    return [];
+  }
 };
 
-export const updateDocument = async (id, data) => {
-  const response = await axios.put(`${API_URL}/${id}`, data);
-  return response.data;
-};
-
-export const deleteDocument = async (id) => {
-  const response = await axios.delete(`${API_URL}/${id}`);
-  return response.data;
+// Save document API call
+export const saveDocumentApi = async (document) => {
+  try {
+    const response = await fetch("/api/documents", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(document),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to save document");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error saving document:", error);
+  }
 };

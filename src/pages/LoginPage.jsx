@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // State to hold error message
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -18,14 +19,19 @@ const LoginPage = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Login failed");
+        const errorResponse = await response.json();
+        throw new Error(errorResponse.message || "Login failed");
       }
 
       const data = await response.json();
 
+      localStorage.setItem("user-id", data.userId);
+      localStorage.setItem("token", data.token);
+
       navigate("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
+      setErrorMessage(error.message);
     }
   };
 
@@ -43,6 +49,11 @@ const LoginPage = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-4 px-4 sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleLogin}>
+            {errorMessage && (
+              <div className="mb-4 text-red-600 text-sm text-center">
+                {errorMessage} {/* Display error message */}
+              </div>
+            )}
             <div>
               <label
                 htmlFor="email"
