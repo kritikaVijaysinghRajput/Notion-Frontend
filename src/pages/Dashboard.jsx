@@ -1,72 +1,78 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Toaster, toast } from "react-hot-toast";
 import Sidebar from "../Components/Sidebar";
 import CreateDocument from "../Components/CreateDocument";
-import { useLocation } from "react-router-dom";
-import DocumentList from "../Components/DocumentList";
-import { getDocuments } from "../api/documentApi";
+import { Menu } from "@mui/icons-material";
 
-function Dashboard({ toggleTheme, darkMode }) {
-  const location = useLocation();
+const Dashboard = () => {
   const [documents, setDocuments] = useState([]);
-  const [currentDocument, setCurrentDocument] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const fetchDocuments = async () => {
+    try {
+      const userId = localStorage.getItem("user-id");
+
+      const response = await fetch("http://localhost:5000/api/documents", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "user-id": userId,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch documents");
+      }
+
+      const data = await response.json();
+      setDocuments(data);
+    } catch (error) {
+      console.error("Error fetching documents:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchDocuments = async () => {
-      const docs = await getDocuments();
-      setDocuments(docs);
-    };
-
     fetchDocuments();
   }, []);
 
   const handleDocumentCreated = (newDocument) => {
-    setDocuments((prevDocs) => [...prevDocs, newDocument]);
+    setDocuments((prevDocuments) => [...prevDocuments, newDocument]);
+    toast.success("Document created successfully!");
   };
 
-  const handleDocumentSelect = (document) => {
-    setCurrentDocument(document);
+  const toggleDarkMode = () => {
+    setDarkMode((prevMode) => !prevMode);
   };
 
-  const handleDocumentUpdate = (updatedDocument) => {
-    setDocuments((prevDocs) =>
-      prevDocs.map((doc) =>
-        doc._id === updatedDocument._id ? updatedDocument : doc
-      )
-    );
-    setCurrentDocument(null); // Clear current document after updating
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen((prev) => !prev);
   };
 
   return (
     <div
-      className={`${
-        darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
-      } flex h-screen`}
+      className={`flex ${
+        darkMode ? "bg-gray-900 text-white" : "bg-white text-black"
+      }`}
     >
-      <Sidebar
-        toggleTheme={toggleTheme}
-        darkMode={darkMode}
-        documents={documents}
-        onDocumentSelect={handleDocumentSelect}
-      />
-      <div className="flex-grow p-8">
-        {location.pathname === "/create" || currentDocument ? (
-          <CreateDocument
-            document={currentDocument}
-            onDocumentCreated={handleDocumentCreated}
-            onDocumentUpdate={handleDocumentUpdate} // Pass update handler
-          />
-        ) : (
-          <>
-            <h1 className="text-3xl font-bold">Welcome to the Dashboard</h1>
-            <DocumentList
-              documents={documents}
-              onDocumentSelect={setCurrentDocument}
-            />
-          </>
-        )}
+      <div className="flex-none md:hidden">
+        <Menu
+          className="cursor-pointer p-4 text-black"
+          onClick={toggleMobileMenu}
+        />
       </div>
+      <Sidebar
+        documents={documents}
+        onToggleDarkMode={toggleDarkMode}
+        darkMode={darkMode}
+        isMobileMenuOpen={isMobileMenuOpen}
+      />
+      <div className="flex-1 p-4">
+        <CreateDocument onDocumentCreated={handleDocumentCreated} />
+      </div>
+      <Toaster position="bottom-right" />
     </div>
   );
-}
+};
 
 export default Dashboard;

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
@@ -22,6 +23,7 @@ function App() {
 
   return (
     <Router>
+      <Toaster />
       <Routes>
         <Route path="/documents/:id" element={<DocumentView />} />
         <Route path="/" element={<LandingPage />} />

@@ -1,51 +1,70 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
+import {
+  Brightness4,
+  Brightness7,
+  DarkMode,
+  LightMode,
+  Menu,
+  Nightlight,
+} from "@mui/icons-material";
+import { useState } from "react";
 
-const Sidebar = () => {
-  const [documents, setDocuments] = useState([]);
+const Sidebar = ({ documents, onToggleDarkMode, darkMode }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchDocuments = async () => {
-      try {
-        const userId = localStorage.getItem("user-id"); // Get the user ID from localStorage
-
-        const response = await fetch("http://localhost:5000/api/documents", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "user-id": userId, // Include user ID in headers to authenticate the request
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch documents");
-        }
-
-        const data = await response.json();
-        setDocuments(data); // Store fetched documents in state
-      } catch (error) {
-        console.error("Error fetching documents:", error);
-      }
-    };
-
-    fetchDocuments(); // Call the fetch function when the component mounts
-  }, []); // Empty dependency array ensures it only runs once
+  const handleMenuToggle = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
 
   return (
-    <div className="w-64 bg-gray-800 text-white h-full">
-      <h2 className="text-lg font-bold p-4">Documents</h2>
-      <ul>
-        {documents.map((doc) => (
-          <li key={doc._id} className="p-2 hover:bg-gray-700">
-            <Link to={`/documents/${doc._id}`} className="block">
-              {doc.title}
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <Link to="/create" className="block p-2 hover:bg-gray-700">
-        Create New Document
-      </Link>
+    <div
+      className={`relative ${
+        darkMode ? "bg-gray-900 text-white" : "bg-gray-900 text-white"
+      } h-screen w-64 p-4 transition-colors duration-300`}
+    >
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-bold flex items-center">
+          {darkMode ? (
+            <DarkMode
+              className="mr-2 cursor-pointer"
+              onClick={onToggleDarkMode}
+            />
+          ) : (
+            <LightMode
+              className="mr-2 cursor-pointer"
+              onClick={onToggleDarkMode}
+            />
+          )}
+          Notebook
+        </h2>
+        <Menu className="cursor-pointer md:hidden" onClick={handleMenuToggle} />
+      </div>
+
+      <div className={`mt-4 ${isMenuOpen ? "block" : "hidden"} md:block`}>
+        <Link
+          to="/create"
+          className={`block p-2 hover:${
+            darkMode ? "bg-gray-700" : "bg-gray-200"
+          } transition-colors duration-300`}
+        >
+          Create New Document
+        </Link>
+        <ul>
+          {documents.map((doc) => (
+            <li
+              key={doc._id}
+              className={`p-2 hover:${
+                darkMode ? "bg-gray-700" : "bg-gray-200"
+              } transition-colors duration-300`}
+            >
+              <Link to={`/documents/${doc._id}`} className="block">
+                {doc.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

@@ -19,13 +19,13 @@ const LandingPage = () => {
             </p>
             <div className="space-x-4">
               <Link
-                to="/dashboard"
+                to="/login"
                 className="bg-gray-700 text-white py-2 px-6 rounded hover:bg-gray-500 transition ease-in-out duration-300"
               >
                 Get started free
               </Link>
               <Link
-                to="/dashboard"
+                to="/signup"
                 className="border border-gray-600 text-gray-600 py-2 px-6 rounded hover:bg-gray-100 transition ease-in-out duration-300"
               >
                 Try a demo

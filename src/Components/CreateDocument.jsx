@@ -1,74 +1,69 @@
 import React, { useState } from "react";
+import { Save } from "@mui/icons-material"; // Import the Save icon from MUI
 
-const CreateDocument = ({ document }) => {
-  const [title, setTitle] = useState(document ? document.title : "");
-  const [content, setContent] = useState(document ? document.content : "");
+const CreateDocument = ({ onDocumentCreated }) => {
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Retrieve the token or user ID from localStorage
-    const token = localStorage.getItem("token"); // Adjust this if you store it differently
-
     try {
+      const userId = localStorage.getItem("user-id");
+
       const response = await fetch("http://localhost:5000/api/documents", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Include the token in the headers
+          "user-id": userId,
         },
-        body: JSON.stringify({
-          title,
-          content,
-        }),
+        body: JSON.stringify({ title, content }),
       });
 
       if (!response.ok) {
         throw new Error("Failed to create document");
       }
 
-      const data = await response.json();
-      console.log("Document created successfully:", data);
-      // Optionally redirect or update the UI after successful creation
+      const newDocument = await response.json();
+
+      if (onDocumentCreated) {
+        onDocumentCreated(newDocument);
+      }
+
+      setTitle("");
+      setContent("");
     } catch (error) {
       console.error("Error saving document:", error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4">
-      <h2 className="text-lg font-bold mb-4">Create Document</h2>
-      <div className="mb-4">
-        <label htmlFor="title" className="block mb-2">
-          Title
-        </label>
+    <form onSubmit={handleSubmit} className="flex flex-col h-screen p-4">
+      <div className="flex justify-center mb-4">
         <input
           type="text"
-          id="title"
+          placeholder="Title of your content"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded"
+          className="block p-2 w-2/5 rounded-2xl border outline-none shadow-sm"
           required
         />
+        <button
+          type="submit"
+          className="flex items-center justify-center ml-2 bg-gray-800 hover:bg-gray-950 text-white p-2 rounded-full"
+        >
+          <Save />
+        </button>
       </div>
-      <div className="mb-4">
-        <label htmlFor="content" className="block mb-2">
-          Content
-        </label>
-        <textarea
-          id="content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded"
-          required
-        />
-      </div>
-      <button
-        type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-      >
-        Save Document
-      </button>
+
+      <textarea
+        placeholder="Start your writing from here...."
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        className="block w-full flex-1 p-2 outline-none resize-none"
+        style={{ border: "none" }}
+        required
+      />
     </form>
   );
 };

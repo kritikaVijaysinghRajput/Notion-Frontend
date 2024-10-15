@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast"; // Import toast
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); // State to hold error message
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -28,10 +29,12 @@ const LoginPage = () => {
       localStorage.setItem("user-id", data.userId);
       localStorage.setItem("token", data.token);
 
+      toast.success("Login successful!"); // Add success toast
       navigate("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
       setErrorMessage(error.message);
+      toast.error(error.message); // Add error toast
     }
   };
 
@@ -51,7 +54,7 @@ const LoginPage = () => {
           <form className="space-y-6" onSubmit={handleLogin}>
             {errorMessage && (
               <div className="mb-4 text-red-600 text-sm text-center">
-                {errorMessage} {/* Display error message */}
+                {errorMessage}
               </div>
             )}
             <div>

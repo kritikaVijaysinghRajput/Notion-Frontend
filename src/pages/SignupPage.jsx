@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast"; // Import toast
 
 const SignUpPage = () => {
   const [name, setName] = useState("");
@@ -21,12 +22,16 @@ const SignUpPage = () => {
       if (response.ok) {
         const data = await response.json();
         console.log("Sign up successful:", data);
+        toast.success("Sign up successful!");
         navigate("/login");
       } else {
+        const errorResponse = await response.json();
+        toast.error(errorResponse.message || "Sign up failed");
         console.error("Sign up failed:", response.statusText);
       }
     } catch (error) {
       console.error("Error during sign up:", error);
+      toast.error("Error during sign up");
     }
   };
 
