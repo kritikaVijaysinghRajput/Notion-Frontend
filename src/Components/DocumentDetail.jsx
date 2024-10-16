@@ -15,7 +15,7 @@ const DocumentDetail = () => {
     const fetchDocument = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/documents/${id}`
+          `https://notebook-backend-2wof.onrender.com/api/documents/${id}`
         );
         const data = await response.json();
         setDocument(data);

@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import Dashboard from "./pages/Dashboard";
 import DocumentView from "./Components/DocumentView";
+import { useAuth } from "@clerk/clerk-react"; // Use Clerk's hook for authentication
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -29,7 +30,6 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-
         <Route
           path="/dashboard/*"
           element={<Dashboard toggleTheme={toggleTheme} darkMode={darkMode} />}

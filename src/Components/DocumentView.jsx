@@ -11,7 +11,7 @@ const DocumentView = () => {
         const userId = localStorage.getItem("user-id");
 
         const response = await fetch(
-          `http://localhost:5000/api/documents/${id}`,
+          `https://notebook-backend-2wof.onrender.com/api/documents/${id}`,
           {
             method: "GET",
             headers: {

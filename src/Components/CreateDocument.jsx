@@ -11,14 +11,17 @@ const CreateDocument = ({ onDocumentCreated }) => {
     try {
       const userId = localStorage.getItem("user-id");
 
-      const response = await fetch("http://localhost:5000/api/documents", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "user-id": userId,
-        },
-        body: JSON.stringify({ title, content }),
-      });
+      const response = await fetch(
+        "https://notebook-backend-2wof.onrender.com/api/documents",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "user-id": userId,
+          },
+          body: JSON.stringify({ title, content }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to create document");
