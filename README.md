@@ -55,7 +55,7 @@ Check out the live version of the app here:
 
 ## **Screenshot**![download])
 
-![Notion-Frontend Screenshot]((https://github.com/user-attachments/assets/74e4323f-02e0-486d-9e23-29a40ce70408)
+![Notion-Frontend](https://github.com/user-attachments/assets/13df5bc5-fe57-4f5a-873b-2b8cfb8a68a8)
 
 ---
 
