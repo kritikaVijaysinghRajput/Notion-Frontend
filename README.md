@@ -53,7 +53,7 @@ Check out the live version of the app here:
 
 ---
 
-## **Screenshot**![download])
+## **Notebook**
 
 ![Notion-Frontend](https://github.com/user-attachments/assets/13df5bc5-fe57-4f5a-873b-2b8cfb8a68a8)
 
